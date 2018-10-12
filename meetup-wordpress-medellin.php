@@ -123,11 +123,11 @@ function mwpm_enqueue_script() {
 add_action( 'wp_footer', 'mwpm_enqueue_script' );
 
 function mwpm_get_headers( $report ) {
-        $headers = array();
-        $headers[] = 'MIME-Version: 1.0';
-        $headers[] = 'From: ' . $report['email'];
-        $headers[] = 'Reply-To: ' . $report['email'];
-        $headers[] = 'Content-Type: text/html';
+    $headers = array();
+    $headers[] = 'MIME-Version: 1.0';
+    $headers[] = 'From: ' . $report['email'];
+    $headers[] = 'Reply-To: ' . $report['email'];
+    $headers[] = 'Content-Type: text/html';
 
-        return $headers;
-    }
+    return $headers;
+}
