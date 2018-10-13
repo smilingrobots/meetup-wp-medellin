@@ -32,8 +32,9 @@ function mwpm_maybe_send_report() {
         return;
     }
 
-    // Sanitizar los datos del reporte sumisitrados por el usuario en el formulario.
-    $report  = stripslashes_deep( $_POST['report'] );
+    // Remover slashes (/) de los datos del reporte suministrados por el
+    // usuario en el formulario.
+    $report = stripslashes_deep( $_POST['report'] );
 
     // Configurar los parámetros del correo
     $to      = get_option( 'admin_email' );
