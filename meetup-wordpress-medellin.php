@@ -36,14 +36,14 @@ function mwpm_generate_button_for_post( $post_id ) {
 } 
 
 function mwpm_add_report_button_to_content( $content ) {
-    $like_box  = '';
-    $like_box .= '<p>';
-    $like_box .= mwpm_generate_button_for_post( get_the_ID() );
-    $like_box .= '</p>';
+    $report_button  = '';
+    $report_button .= '<p>';
+    $report_button .= mwpm_generate_button_for_post( get_the_ID() );
+    $report_button .= '</p>';
 
     $report_modal = mwpm_render_report_modal();
 
-    return $like_box . $content . $report_modal;
+    return $report_button . $content . $report_modal;
 }
 
 function mwpm_maybe_send_report() {
