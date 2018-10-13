@@ -6,6 +6,24 @@
  * Version: 1.0.0
  */
 
+/**
+ * Función principal utilizada para hacer las verficaciones iniciales y
+ * configurar las acciones y filtros que soportan la funcionalidad del
+ * plugin.
+ *
+ * @since 1.0.0
+ */
+function mwpm_wordpress_configured() {
+    // El formulario para reportar entradas solo será mostrado en páginas y
+    // publicaciones individuales.
+    if ( is_single() || is_page() ) {
+        add_filter( 'the_content', 'mwpm_add_report_button_to_content' );
+        add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_style' );
+        add_action( 'wp_footer', 'mwpm_enqueue_script' );
+    }
+}
+add_action( 'wp', 'mwpm_wordpress_configured' );
+
 function mwpm_generate_button_for_post( $post_id ) {
     $user_id = get_current_user_id();
     $button  = '';
@@ -22,9 +40,11 @@ function mwpm_add_report_button_to_content( $content ) {
     $like_box .= '<p>';
     $like_box .= mwpm_generate_button_for_post( get_the_ID() );
     $like_box .= '</p>';
-    return $like_box . $content;
+
+    $report_modal = mwpm_render_report_modal();
+
+    return $like_box . $content . $report_modal;
 }
-add_filter( 'the_content', 'mwpm_add_report_button_to_content' );
 
 function mwpm_maybe_send_report() {
     // Validar que existan los datos del reporte.
@@ -68,7 +88,13 @@ function mwpm_maybe_send_report() {
 }
 add_action( 'wp', 'mwpm_maybe_send_report' );
 
-function mwpm_add_modal_to_footer() {
+/**
+ * Crea el código HTML para el formulario que los usuarios podrán utilizar
+ * para reportar una entrada.
+ *
+ * @since 1.0.0
+ */
+function mwpm_render_report_modal() {
     $modal = '
     <!-- Report Post Modal -->
     <div id="reportModal" class="report-modal">
@@ -99,10 +125,8 @@ function mwpm_add_modal_to_footer() {
         </div>
     </div>';
 
-    echo $modal;
+    return $modal;
 }
-add_action( 'wp_footer', 'mwpm_add_modal_to_footer' );
-
 
 function mwpm_enqueue_style() {
     wp_enqueue_style(
@@ -111,7 +135,6 @@ function mwpm_enqueue_style() {
         false
     ); 
 }
-add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_style' );
 
 function mwpm_enqueue_script() {
     wp_enqueue_script(
@@ -120,7 +143,6 @@ function mwpm_enqueue_script() {
         false
     );
 }
-add_action( 'wp_footer', 'mwpm_enqueue_script' );
 
 function mwpm_get_headers( $report ) {
     $headers = array();
