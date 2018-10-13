@@ -108,8 +108,7 @@ add_action( 'wp_footer', 'mwpm_add_modal_to_footer' );
 function mwpm_enqueue_style() {
     wp_enqueue_style(
         'mwpm-styles',
-        plugins_url( '/', __FILE__ ) . 'style.css',
-        false
+        plugins_url( '/', __FILE__ ) . 'style.css'
     ); 
 }
 add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_style' );
@@ -117,8 +116,7 @@ add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_style' );
 function mwpm_enqueue_script() {
     wp_enqueue_script(
         'mwpm-script',
-        plugins_url( '/', __FILE__ ) . 'mwpm_script.js',
-        false
+        plugins_url( '/', __FILE__ ) . 'mwpm_script.js'
     );
 }
 add_action( 'wp_footer', 'mwpm_enqueue_script' );
