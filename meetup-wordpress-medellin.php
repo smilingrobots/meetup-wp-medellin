@@ -32,17 +32,29 @@ function mwpm_maybe_send_report() {
         return;
     }
 
-    // Sanitizar los datos del reporte sumisitrados por el usuario en el formulario.
-    $report  = stripslashes_deep( $_POST['report'] );
+    // Remover slashes (/) de los datos del reporte suministrados por el
+    // usuario en el formulario.
+    $report = stripslashes_deep( $_POST['report'] );
 
-    // Configurar los parámetros del correo
+    // Configurar los parámetros del correo.
     $to      = get_option( 'admin_email' );
     $subject = sprintf (
         __( 'You have a report from your post %s', 'mwpm' ),
         get_the_title( $report['post_id'] )
     );
     $headers = mwpm_get_headers( $report );
+    $message = mwpm_build_report_email_message( $report );
 
+    // Enviar el correo con el reporte.
+    wp_mail( $to, $subject, $message, $headers );
+
+}
+add_action( 'wp', 'mwpm_maybe_send_report' );
+
+/**
+ * @since 1.0.0
+ */
+function mwpm_build_report_email_message( $report ) {
     $message  = '';
     $message .= __( 'Hi there Admin,', 'mwpm' );
     $message .= '<br/><br/>';
@@ -62,11 +74,8 @@ function mwpm_maybe_send_report() {
 
     $message .= '<a href="' . $url . '">' . $url . '</a>';
 
-    // Enviar el correo con el reporte.
-    wp_mail( $to, $subject, $message, $headers );
-
+    return $message;
 }
-add_action( 'wp', 'mwpm_maybe_send_report' );
 
 function mwpm_add_modal_to_footer() {
     $modal = '
