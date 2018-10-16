@@ -116,31 +116,34 @@ function get_modal_form() {
     // Inicializar variables y obtener los datos del usuario actual
     $username     = '';
     $user_email   = '';
-    $current_user = wp_get_current_user();
 
     // Validar que el usuario esté loggeado.
-    if ( $current_user->exists() ) {
+    if( is_user_logged_in() ) {
         // Obtener los datos del usuario actual.
-        $username = $current_user->user_login;
+        $current_user = wp_get_current_user();
+
+        $username   = $current_user->user_login;
         $user_email = $current_user->user_email;
     }
 
     // Crear campo del nombre de quien reporta
-    $name_input = '<label for="mwpm-report-form__name">' . __( 'Your Name', 'mwpm' ) . ': </label>'. $username ;
+    $name_input  = '<label for="mwpm-report-form__name">' . esc_html__( 'Your Name', 'mwpm' ) . ': </label>';
+    $name_input .= esc_hrml( $username );
 
-    if ( empty( $username ) ) {
+    if ( ! $username ) {
         $name_input .= '<input id="mwpm-report-form__name" type="text" name="report[name]" placeholder="María Pérez" required/>';
     } else {
-        $name_input .= '<input id="mwpm-report-form__name" type="hidden" name="report[name]" value=" . ' . $username . '"/>';
+        $name_input .= '<input id="mwpm-report-form__name" type="hidden" name="report[name]" value=" . ' . esc_attr( $username ) . '"/>';
     }
 
     // Crear campo del correo de quien reporta
-    $email_input = '<label for="mwpm-report-form__email">' . __( 'Your Email', 'mwpm' ) . ': </label>' . $user_email;
+    $email_input  = '<label for="mwpm-report-form__email">' . esc_html__( 'Your Email', 'mwpm' ) . ': </label>';
+    $email_input .= esc_html( $user_email );
 
-    if ( empty( $user_email ) ) {
+    if ( ! $user_email ) {
         $email_input .= '<input id="mwpm-report-form__email" type="email" name="report[email]" placeholder="maria.perez@example.org" required/>';
     } else {
-        $email_input .= '<input id="mwpm-report-form__email" type="hidden" name="report[email]" value="' . $user_email . '"/>';
+        $email_input .= '<input id="mwpm-report-form__email" type="hidden" name="report[email]" value="' . esc_attr( $user_email ) . '"/>';
     }
 
     // Crear formulario.
@@ -154,11 +157,11 @@ function get_modal_form() {
         </p>
 
         <p>
-            <label for="mwpm-report-form__reason">' . __( 'Please enter the reasons to report this post:', 'mwpm' ) . '</label>
-            <textarea id="mwpm-report-form__reason" name="report[reason]" value="" placeholder="' . __( 'Additional info.', 'mwpm' ) . '" required></textarea>
+            <label for="mwpm-report-form__reason">' . esc_html__( 'Please enter the reasons to report this post:', 'mwpm' ) . '</label>
+            <textarea id="mwpm-report-form__reason" name="report[reason]" value="" placeholder="' . esc_attr__( 'Additional info.', 'mwpm' ) . '" required></textarea>
         </p>
         <p>
-            <input class="btn" type="submit" value="' . __( 'Report', 'mwpm' ) . '" />
+            <input class="btn" type="submit" value="' . esc_attr__( 'Report', 'mwpm' ) . '" />
         </p>
     </form>';
 
