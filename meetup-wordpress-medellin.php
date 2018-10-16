@@ -107,17 +107,18 @@ function mwpm_render_report_modal() {
             <form action="/" method="post">
                 <input type="hidden" name="report[post_id]" value="' . get_the_ID() . '" />
                 <p>
-                    <label>' . __( 'Your Name', 'mwpm' ) . '</label>
-                    <input type="text" name="report[name]" placeholder="Willy" required/>
+                    <label for="mwpm-report-form__name">' . __( 'Your Name', 'mwpm' ) . '</label>
+                    <input id="mwpm-report-form__name" type="text" name="report[name]" placeholder="María Pérez" required/>
                 </p>
                 <p>
-                    <label>' . __( 'Your Email', 'mwpm' ) . '</label>
-                    <input type="email" name="report[email]" placeholder="w@willy.com" required/>
+                    <label for="mwpm-report-form__email">' . __( 'Your Email', 'mwpm' ) . '</label>
+                    <input id="mwpm-report-form__email" type="email" name="report[email]" placeholder="maria.perez@example.org" required/>
                 </p>
 
-                <p>' . __( 'Please enter the reasons to report this post:', 'mwpm' ) . '</p>
-                <textarea name="report[reason]" value="" placeholder="' . __( 'Additional info.', 'mwpm' ) . '" required></textarea>
-                <br/>
+                <p>
+                    <label for="mwpm-report-form__reason">' . __( 'Please enter the reasons to report this post:', 'mwpm' ) . '</label>
+                    <textarea id="mwpm-report-form__reason" name="report[reason]" value="" placeholder="' . __( 'Additional info.', 'mwpm' ) . '" required></textarea>
+                </p>
                 <p>
                     <input class="btn" type="submit" value="' . __( 'Report', 'mwpm' ) . '" />
                 </p>
@@ -131,16 +132,14 @@ function mwpm_render_report_modal() {
 function mwpm_enqueue_style() {
     wp_enqueue_style(
         'mwpm-styles',
-        plugins_url( '/', __FILE__ ) . 'style.css',
-        false
+        plugins_url( '/', __FILE__ ) . 'style.css'
     ); 
 }
 
 function mwpm_enqueue_script() {
     wp_enqueue_script(
         'mwpm-script',
-        plugins_url( '/', __FILE__ ) . 'mwpm_script.js',
-        false
+        plugins_url( '/', __FILE__ ) . 'mwpm_script.js'
     );
 }
 

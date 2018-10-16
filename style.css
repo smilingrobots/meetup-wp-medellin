@@ -5,6 +5,8 @@
     z-index: 10; /* Sit on top */
     left: 0;
     top: 0;
+    right: 0;
+    bottom: 0;
     width: 100%; /* Full width */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
@@ -22,6 +24,10 @@
 .report-header {
     display: inline-block;
 }
+.report-header h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+}
 
 /* The Close Button */
 .close {
@@ -29,6 +35,7 @@
     float: right;
     font-size: 28px;
     font-weight: bold;
+    line-height: 28px;
 }
 
 .close:hover,
@@ -36,4 +43,17 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.report-modal-content label {
+    display: block;
+}
+.report-modal-content p {
+    margin-bottom: 8px;
+}
+.report-modal-content input[type="text"],
+.report-modal-content input[type="email"],
+.report-modal-content textarea {
+    box-sizing: border-box;
+    width: 100%;
 }
