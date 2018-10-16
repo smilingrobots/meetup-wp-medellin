@@ -17,7 +17,6 @@ function mwpm_wordpress_configured() {
     // El formulario para reportar entradas solo será mostrado en páginas y
     // publicaciones individuales.
     if ( is_single() || is_page() ) {
-        add_filter( 'the_content', 'mwpm_add_report_button_to_content' );
         add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_style' );
         add_action( 'wp_footer', 'mwpm_enqueue_script' );
     }
@@ -36,15 +35,22 @@ function mwpm_generate_button_for_post( $post_id ) {
 } 
 
 function mwpm_add_report_button_to_content( $content ) {
-    $report_button  = '';
-    $report_button .= '<p>';
-    $report_button .= mwpm_generate_button_for_post( get_the_ID() );
-    $report_button .= '</p>';
+    // El formulario para reportar entradas solo será mostrado en páginas y
+    // publicaciones individuales.
+    if ( is_single() || is_page() ) {
+        $report_button  = '';
+        $report_button .= '<p>';
+        $report_button .= mwpm_generate_button_for_post( get_the_ID() );
+        $report_button .= '</p>';
 
-    $report_modal = mwpm_render_report_modal();
+        $report_modal = mwpm_render_report_modal();
 
-    return $report_button . $content . $report_modal;
+        return $report_button . $content . $report_modal;
+    }
+
+    return $content;
 }
+add_filter( 'the_content', 'mwpm_add_report_button_to_content' );
 
 function mwpm_maybe_send_report() {
     // Validar que existan los datos del reporte.
