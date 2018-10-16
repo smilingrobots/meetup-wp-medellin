@@ -7,7 +7,7 @@
  */
 
 /**
- * Función principal utilizada para hacer las verficaciones iniciales y
+ * Función principal utilizada para hacer las verificaciones iniciales y
  * configurar las acciones y filtros que soportan la funcionalidad del
  * plugin.
  *
