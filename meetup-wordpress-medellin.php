@@ -6,23 +6,6 @@
  * Version: 1.0.0
  */
 
-/**
- * Función principal utilizada para hacer las verificaciones iniciales y
- * configurar las acciones y filtros que soportan la funcionalidad del
- * plugin.
- *
- * @since 1.0.0
- */
-function mwpm_wordpress_configured() {
-    // El formulario para reportar entradas solo será mostrado en páginas y
-    // publicaciones individuales.
-    if ( is_single() || is_page() ) {
-        add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_style' );
-        add_action( 'wp_footer', 'mwpm_enqueue_script' );
-    }
-}
-add_action( 'wp', 'mwpm_wordpress_configured' );
-
 function mwpm_generate_button_for_post( $post_id ) {
     $user_id = get_current_user_id();
     $button  = '';
@@ -135,19 +118,30 @@ function mwpm_render_report_modal() {
     return $modal;
 }
 
-function mwpm_enqueue_style() {
-    wp_enqueue_style(
-        'mwpm-styles',
-        plugins_url( '/', __FILE__ ) . 'style.css'
-    ); 
-}
+/**
+ * Función asociada a la acción wp_enqueue_scripts para registrar las hojas
+ * de estilo y los scripts que el plugin necesita en el frontend.
+ *
+ * @since 1.0.0
+ */
+function mwpm_enqueue_scripts_and_styles() {
+    // Las hojas de estilo y scripts solo seran necesarios en páginas y publicaciones individuales.
+    if ( is_single() || is_page() ) {
+        wp_enqueue_style(
+            'mwpm-styles',
+            plugins_url( '/style.css', __FILE__ )
+        );
 
-function mwpm_enqueue_script() {
-    wp_enqueue_script(
-        'mwpm-script',
-        plugins_url( '/', __FILE__ ) . 'mwpm_script.js'
-    );
+        wp_enqueue_script(
+            'mwpm-script',
+            plugins_url( '/mwpm_script.js', __FILE__ ),
+            array(),
+            '1.0.0',
+            true // $in_footer = true para que el <script> se genere al final de la página.
+        );
+    }
 }
+add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_scripts_and_styles' );
 
 function mwpm_get_headers( $report ) {
     $headers = array();
