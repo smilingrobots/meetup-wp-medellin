@@ -68,7 +68,6 @@ function mwpm_maybe_send_report() {
 add_action( 'wp', 'mwpm_maybe_send_report' );
 
 function mwpm_add_modal_to_footer() {
-    $user_id = get_current_user_id();
     $modal = '
     <!-- Report Post Modal -->
     <div id="reportModal" class="report-modal">
@@ -114,8 +113,8 @@ function mwpm_get_headers( $report ) {
 
 function get_modal_form() {
     // Inicializar variables y obtener los datos del usuario actual
-    $username     = '';
-    $user_email   = '';
+    $username   = '';
+    $user_email = '';
 
     // Validar que el usuario esté loggeado.
     if( is_user_logged_in() ) {
@@ -128,26 +127,24 @@ function get_modal_form() {
 
     // Crear campo del nombre de quien reporta
     $name_input  = '<label for="mwpm-report-form__name">' . esc_html__( 'Your Name', 'mwpm' ) . ': </label>';
-    $name_input .= esc_hrml( $username );
-
-    if ( ! $username ) {
-        $name_input .= '<input id="mwpm-report-form__name" type="text" name="report[name]" placeholder="María Pérez" required/>';
-    } else {
-        $name_input .= '<input id="mwpm-report-form__name" type="hidden" name="report[name]" value=" . ' . esc_attr( $username ) . '"/>';
-    }
+    $name_input .= esc_html( $username );
+    $name_input .= sprintf(
+        '<input id="mwpm-report-form__name" type="%s" name="report[name]" placeholder="María Pérez" value="%s" required/>',
+        $username ? 'hidden' : 'text',
+        $username ? esc_attr( $username ) : ''
+    );
 
     // Crear campo del correo de quien reporta
     $email_input  = '<label for="mwpm-report-form__email">' . esc_html__( 'Your Email', 'mwpm' ) . ': </label>';
     $email_input .= esc_html( $user_email );
-
-    if ( ! $user_email ) {
-        $email_input .= '<input id="mwpm-report-form__email" type="email" name="report[email]" placeholder="maria.perez@example.org" required/>';
-    } else {
-        $email_input .= '<input id="mwpm-report-form__email" type="hidden" name="report[email]" value="' . esc_attr( $user_email ) . '"/>';
-    }
+    $email_input .= sprintf( 
+        '<input id="mwpm-report-form__email" type="%s" name="report[email]" placeholder="maria.perez@example.org" value="%s" required/>',
+        $user_email ? 'hidden' : 'email',
+        $user_email ? esc_attr( $user_email ) : ''
+    );
 
     // Crear formulario.
-    $form = '<form action="/" method="post">
+    $form = '<form action="" method="post">
         <input type="hidden" name="report[post_id]" value="' . get_the_ID() . '" />
         <p>
             ' . $name_input . '
