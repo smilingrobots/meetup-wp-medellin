@@ -65,11 +65,24 @@ function mwpm_render_report_modal() {
  * @since 1.0.0
  */
 function mwpm_get_modal_form() {
+    // Inicializar variables y obtener los datos del usuario actual
+    $username   = '';
+    $user_email = '';
+
+    // Validar que el usuario esté loggeado.
+    if( is_user_logged_in() ) {
+        // Obtener los datos del usuario actual.
+        $current_user = wp_get_current_user();
+
+        $username   = $current_user->user_login;
+        $user_email = $current_user->user_email;
+    }
+
     $form = '
     <form action="" method="post">
         <input type="hidden" name="report[post_id]" value="' . get_the_ID() . '" />
-        <p>' . mwpm_render_name_input_field() . '</p>
-        <p>' . mwpm_render_email_input_field() . '</p>
+        <p>' . mwpm_render_name_input_field( $username ) . '</p>
+        <p>' . mwpm_render_email_input_field( $user_email ) . '</p>
 
         <p>
             <label for="mwpm-report-form__reason">Please enter the reasons to report this post:</label>
@@ -88,10 +101,16 @@ function mwpm_get_modal_form() {
  *
  * @since 1.0.0
  */
-function mwpm_render_name_input_field() {
+function mwpm_render_name_input_field( $username ) {
     $field  = '';
-    $field .= '<label for="mwpm-report-form__name">Your Name</label>';
-    $field .= '<input id="mwpm-report-form__name" type="text" name="report[name]" placeholder="María Pérez" required/>';
+
+    if ( $username ) {
+        $field .= '<label for="mwpm-report-form__name">Your Name: <span>' . $username . '</span></label>';
+        $field .= '<input id="mwpm-report-form__name" type="hidden" name="report[name]" value="' . $username . '" />';
+    } else {
+        $field .= '<label for="mwpm-report-form__name">Your Name</label>';
+        $field .= '<input id="mwpm-report-form__name" type="text" name="report[name]" placeholder="María Pérez" required />';
+    }
 
     return $field;
 }
@@ -101,10 +120,16 @@ function mwpm_render_name_input_field() {
  *
  * @since 1.0.0
  */
-function mwpm_render_email_input_field() {
+function mwpm_render_email_input_field( $user_email ) {
     $field  = '';
-    $field .= '<label for="mwpm-report-form__email">You Email</label>';
-    $field .= '<input id="mwpm-report-form__email" type="email" name="report[email]" placeholder="maria.perez@example.org" required/>';
+
+    if ( $user_email ) {
+        $field .= '<label for="mwpm-report-form__email">You Email: <span>' . $user_email . '</span></label>';
+        $field .= '<input id="mwpm-report-form__name" type="hidden" name="report[email]" value="' . $user_email . '" />';
+    } else {
+        $field .= '<label for="mwpm-report-form__email">You Email</label>';
+        $field .= '<input id="mwpm-report-form__email" type="email" name="report[email]" placeholder="maria.perez@example.org" required />';
+    }
 
     return $field;
 }
