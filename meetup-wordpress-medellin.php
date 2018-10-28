@@ -126,8 +126,9 @@ function get_modal_form() {
     }
 
     // Crear campo del nombre de quien reporta
-    $name_input  = '<label for="mwpm-report-form__name">' . esc_html__( 'Your Name', 'mwpm' ) . ': </label>';
-    $name_input .= esc_html( $username );
+    /* translators: %s es el nombre de usuario del usuario actual. */
+    $name_label  = sprintf( __( 'Your Name: %s', 'mwpm' ), $username );
+    $name_input  = '<label for="mwpm-report-form__name">' . esc_html( $name_label ) . '</label>';
     $name_input .= sprintf(
         '<input id="mwpm-report-form__name" type="%s" name="report[name]" placeholder="María Pérez" value="%s" required/>',
         $username ? 'hidden' : 'text',
@@ -135,8 +136,10 @@ function get_modal_form() {
     );
 
     // Crear campo del correo de quien reporta
-    $email_input  = '<label for="mwpm-report-form__email">' . esc_html__( 'Your Email', 'mwpm' ) . ': </label>';
-    $email_input .= esc_html( $user_email );
+    /* translators: %s es la dirección de correo electrónico del usuario actual. */
+    $email_label  = sprintf( __( 'Your Email: %s', 'mwpm' ), $user_email );
+    $email_input  = '<label for="mwpm-report-form__email">' . esc_html( $email_label ) . '</label>';
+
     $email_input .= sprintf( 
         '<input id="mwpm-report-form__email" type="%s" name="report[email]" placeholder="maria.perez@example.org" value="%s" required/>',
         $user_email ? 'hidden' : 'email',
