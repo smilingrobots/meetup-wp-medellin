@@ -6,6 +6,31 @@
  * Version: 1.0.0
  */
 
+/**
+ * Función asociada a la acción wp_enqueue_scripts para registrar las hojas
+ * de estilo y los scripts que el plugin necesita en el frontend.
+ *
+ * @since 1.0.0
+ */
+function mwpm_enqueue_scripts_and_styles() {
+    // Las hojas de estilo y scripts solo seran necesarios en páginas y publicaciones individuales.
+    if ( is_single() || is_page() ) {
+        wp_enqueue_style(
+            'mwpm-styles',
+            plugins_url( '/style.css', __FILE__ )
+        );
+
+        wp_enqueue_script(
+            'mwpm-script',
+            plugins_url( '/mwpm_script.js', __FILE__ ),
+            array(),
+            '1.0.0',
+            true // $in_footer = true para que el <script> se genere al final de la página.
+        );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_scripts_and_styles' );
+
 function mwpm_add_report_button_to_content( $content ) {
     // El formulario para reportar entradas solo será mostrado en páginas y
     // publicaciones individuales.
