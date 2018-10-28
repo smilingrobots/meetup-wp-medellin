@@ -17,11 +17,20 @@ function mwpm_generate_button_for_post( $post_id ) {
 } 
 
 function mwpm_add_report_button_to_content( $content ) {
-    $like_box  = '';
-    $like_box .= '<p>';
-    $like_box .= mwpm_generate_button_for_post( get_the_ID() );
-    $like_box .= '</p>';
-    return $like_box . $content;
+    // El formulario para reportar entradas solo será mostrado en páginas y
+    // publicaciones individuales.
+    if ( is_single() || is_page() ) {
+        $report_button  = '';
+        $report_button .= '<p>';
+        $report_button .= mwpm_generate_button_for_post( get_the_ID() );
+        $report_button .= '</p>';
+
+        $report_modal = mwpm_render_report_modal();
+
+        return $report_button . $content . $report_modal;
+    }
+
+    return $content;
 }
 add_filter( 'the_content', 'mwpm_add_report_button_to_content' );
 
@@ -76,7 +85,13 @@ function mwpm_build_report_email_message( $report ) {
     return $message;
 }
 
-function mwpm_add_modal_to_footer() {
+/**
+ * Crea el código HTML para el formulario que los usuarios podrán utilizar
+ * para reportar una entrada.
+ *
+ * @since 1.0.0
+ */
+function mwpm_render_report_modal() {
     $modal = '
     <!-- Report Post Modal -->
     <div id="reportModal" class="report-modal">
@@ -89,26 +104,33 @@ function mwpm_add_modal_to_footer() {
         '</div>
     </div>';
 
-    echo $modal;
+    return $modal;
 }
-add_action( 'wp_footer', 'mwpm_add_modal_to_footer' );
 
+/**
+ * Función asociada a la acción wp_enqueue_scripts para registrar las hojas
+ * de estilo y los scripts que el plugin necesita en el frontend.
+ *
+ * @since 1.0.0
+ */
+function mwpm_enqueue_scripts_and_styles() {
+    // Las hojas de estilo y scripts solo seran necesarios en páginas y publicaciones individuales.
+    if ( is_single() || is_page() ) {
+        wp_enqueue_style(
+            'mwpm-styles',
+            plugins_url( '/style.css', __FILE__ )
+        );
 
-function mwpm_enqueue_style() {
-    wp_enqueue_style(
-        'mwpm-styles',
-        plugins_url( '/', __FILE__ ) . 'style.css'
-    ); 
+        wp_enqueue_script(
+            'mwpm-script',
+            plugins_url( '/mwpm_script.js', __FILE__ ),
+            array(),
+            '1.0.0',
+            true // $in_footer = true para que el <script> se genere al final de la página.
+        );
+    }
 }
-add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_style' );
-
-function mwpm_enqueue_script() {
-    wp_enqueue_script(
-        'mwpm-script',
-        plugins_url( '/', __FILE__ ) . 'mwpm_script.js'
-    );
-}
-add_action( 'wp_footer', 'mwpm_enqueue_script' );
+add_action( 'wp_enqueue_scripts', 'mwpm_enqueue_scripts_and_styles' );
 
 function mwpm_get_headers( $report ) {
     $headers = array();
