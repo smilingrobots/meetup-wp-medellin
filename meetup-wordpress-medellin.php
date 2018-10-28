@@ -133,3 +133,77 @@ function mwpm_render_email_input_field( $user_email ) {
 
     return $field;
 }
+
+/**
+ * Envía una notificación al administrador cuando la petición actual
+ * incluye información enviada desde el formulario para reportar
+ * entradas.
+ *
+ * @since 1.0.0
+ */
+function mwpm_maybe_send_report() {
+    // Validar que existan los datos del reporte.
+    if ( empty( $_POST['report'] ) ) {
+        return;
+    }
+
+    // Remover slashes (/) de los datos del reporte suministrados por el
+    // usuario en el formulario.
+    $report = wp_unslash( $_POST['report'] );
+
+    // Configurar los parámetros del correo.
+    $to      = get_option( 'admin_email' );
+    $subject = sprintf(
+        'You have a report for post "%s"',
+        get_the_title( $report['post_id'] )
+    );
+    $headers = mwpm_get_report_email_headers( $report );
+    $message = mwpm_build_report_email_message( $report );
+
+    // Enviar el correo con el reporte.
+    wp_mail( $to, $subject, $message, $headers );
+
+}
+add_action( 'wp', 'mwpm_maybe_send_report' );
+
+/**
+ * Retorna un array de headers para el correo de notificación que será
+ * enviado al administrador.
+ *
+ * @since 1.0.0
+ */
+function mwpm_get_report_email_headers( $report ) {
+    $headers = array();
+
+    $headers[] = 'MIME-Version: 1.0';
+    $headers[] = 'From: ' . $report['email'];
+    $headers[] = 'Reply-To: ' . $report['email'];
+    $headers[] = 'Content-Type: text/html';
+
+    return $headers;
+}
+
+/**
+ * Construye el contenido para el correo de notificación que será
+ * enviado al administrador.
+ *
+ * @since 1.0.0
+ */
+function mwpm_build_report_email_message( $report ) {
+    $message  = '';
+    $message .= 'Hi there Admin,' . '<br/><br/>';
+    $message .= sprintf(
+        '%s has reported your post.',
+        $report['name']
+    );
+    $message .= '<br/><br/>';
+    $message .= 'Additional information for this report is included below:' . '<br/><br/>';
+    $message .= '<i>' . nl2br( $report['reason'] ) . '</i>' . '<br/><br/>';
+    $message .= 'You can edit the post clicking the following link: ';
+
+    $url = admin_url( 'post.php?post=' . $report['post_id'] . '&action=edit' );
+
+    $message .= '<a href="' . $url . '">' . $url . '</a>';
+
+    return $message;
+}
