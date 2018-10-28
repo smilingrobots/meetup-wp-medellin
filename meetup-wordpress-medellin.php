@@ -12,7 +12,7 @@ function mwpm_add_report_button_to_content( $content ) {
     if ( is_single() || is_page() ) {
         $report_button  = '';
         $report_button .= '<p>';
-        $report_button .= '-- Reportar --';
+        $report_button .= mwpm_generate_button_for_post();
         $report_button .= '</p>';
 
         return $report_button . $content;
@@ -21,3 +21,14 @@ function mwpm_add_report_button_to_content( $content ) {
     return $content;
 }
 add_filter( 'the_content', 'mwpm_add_report_button_to_content' );
+
+function mwpm_generate_button_for_post() {
+    $button  = '';
+    $button .= '<button id="reportBtn">';
+    $button .= '<span class="dashicons dashicons-flag"></span>';
+    $button .= ' ';
+    $button .= 'Reportar';
+    $button .= '</button>';
+
+    return $button;
+}
