@@ -54,7 +54,7 @@ function mwpm_generate_button_for_post() {
     $button .= '<button id="reportBtn">';
     $button .= '<span class="dashicons dashicons-flag"></span>';
     $button .= ' ';
-    $button .= 'Reportar';
+    $button .= __( 'Reportar', 'mwpm' );
     $button .= '</button>';
 
     return $button;
@@ -72,7 +72,9 @@ function mwpm_render_report_modal() {
     <div id="reportModal" class="report-modal">
         <div class="report-modal-content">
             <span class="report-header">
-                <h2>You are about to report "' . get_the_title() . '"</h2>
+                <h2>' .
+                sprintf( __( 'You are about to report "%s"', 'mwpm' ), get_the_title() )
+                . '</h2>
             </span>
             <span class="close">&times;</span>
             ' . mwpm_get_modal_form() . '
@@ -110,11 +112,13 @@ function mwpm_get_modal_form() {
         <p>' . mwpm_render_email_input_field( $user_email ) . '</p>
 
         <p>
-            <label for="mwpm-report-form__reason">Please enter the reasons to report this post:</label>
-            <textarea id="mwpm-report-form__reason" name="report[reason]" value="" placeholder="Additional info." required></textarea>
+            <label for="mwpm-report-form__reason">' .
+            __( 'Please enter the reasons to report this post:', 'mwpm' ) . '
+            </label>
+            <textarea id="mwpm-report-form__reason" name="report[reason]" value="" placeholder="' . __( 'Additional info.', 'mwpm' ) . '" required></textarea>
         </p>
         <p>
-            <input class="btn" type="submit" value="Report" />
+            <input class="btn" type="submit" value="' . __( 'Report', 'mwpm' ) . '" />
         </p>
     </form>';
 
@@ -130,10 +134,14 @@ function mwpm_render_name_input_field( $username ) {
     $field  = '';
 
     if ( $username ) {
-        $field .= '<label for="mwpm-report-form__name">Your Name: <span>' . $username . '</span></label>';
+        $field .= '<label for="mwpm-report-form__name">';
+        $field .= sprintf( __( 'Your Name: %s', 'mwpm' ), '<span>' . $username . '</span>' );
+        $field .= '</label>';
         $field .= '<input id="mwpm-report-form__name" type="hidden" name="report[name]" value="' . $username . '" />';
     } else {
-        $field .= '<label for="mwpm-report-form__name">Your Name</label>';
+        $field .= '<label for="mwpm-report-form__name">';
+        $field .= __( 'Your Name', 'mwpm' );
+        $field .= '</label>';
         $field .= '<input id="mwpm-report-form__name" type="text" name="report[name]" placeholder="María Pérez" required />';
     }
 
@@ -149,10 +157,14 @@ function mwpm_render_email_input_field( $user_email ) {
     $field  = '';
 
     if ( $user_email ) {
-        $field .= '<label for="mwpm-report-form__email">You Email: <span>' . $user_email . '</span></label>';
+        $field .= '<label for="mwpm-report-form__email">';
+        $field .= sprintf( __( 'You Email: %s', 'mwpm' ), '<span>' . $user_email . '</span>' );
+        $field .= '</label>';
         $field .= '<input id="mwpm-report-form__name" type="hidden" name="report[email]" value="' . $user_email . '" />';
     } else {
-        $field .= '<label for="mwpm-report-form__email">You Email</label>';
+        $field .= '<label for="mwpm-report-form__email">';
+        $field .= __( 'You Email', 'mwpm' );
+        $field .= '</label>';
         $field .= '<input id="mwpm-report-form__email" type="email" name="report[email]" placeholder="maria.perez@example.org" required />';
     }
 
@@ -216,19 +228,21 @@ function mwpm_get_report_email_headers( $report ) {
  */
 function mwpm_build_report_email_message( $report ) {
     $message  = '';
-    $message .= 'Hi there Admin,' . '<br/><br/>';
+    $message .= __( 'Hi there Admin,', 'mwpm' ). '<br/><br/>';
     $message .= sprintf(
         '%s has reported your post.',
         $report['name']
     );
     $message .= '<br/><br/>';
-    $message .= 'Additional information for this report is included below:' . '<br/><br/>';
+    $message .= __( 'Additional information for this report is included below:', 'mwpm' ) . '<br/><br/>';
     $message .= '<i>' . nl2br( $report['reason'] ) . '</i>' . '<br/><br/>';
-    $message .= 'You can edit the post clicking the following link: ';
 
     $url = admin_url( 'post.php?post=' . $report['post_id'] . '&action=edit' );
 
-    $message .= '<a href="' . $url . '">' . $url . '</a>';
+    $message .= sprintf(
+        __( 'You can edit the post clicking the following link: %s', 'mwpm' ),
+        '<a href="' . $url . '">' . $url . '</a>'
+    );
 
     return $message;
 }
